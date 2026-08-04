@@ -101,15 +101,6 @@ npm run dev
 
 La aplicación estará disponible en `http://localhost:3000`
 
-### Variables de Entorno
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIs...
-```
-
----
 
 ## 📁 Estructura del Proyecto
 
