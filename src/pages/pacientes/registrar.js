@@ -51,8 +51,8 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error 
                                     <label className="form-label" htmlFor="gender">Género</label>
                                     <select className="form-select" id="gender" name="gender" required>
                                         <option value="">Seleccione...</option>
-                                        {Object.values(GENDERS).map(g => (
-                                            <option key={g} value={g}>{g}</option>
+                                        {Object.entries(GENDERS).map(([val, label]) => (
+                                            <option key={val} value={val}>{label}</option>
                                         ))}
                                     </select>
                                 </div>
