@@ -56,6 +56,13 @@ export default apiHandler({
             patientData.cedula = cedulaService.sanitize(patientData.cedula);
         }
 
+        // Convert empty strings to null to avoid breaking CHECK constraints (like blood_type)
+        Object.keys(patientData).forEach(key => {
+            if (patientData[key] === '') {
+                patientData[key] = null;
+            }
+        });
+
         // Clean up virtual fields that don't exist in the database table
         delete patientData.parent_cedula;
 
