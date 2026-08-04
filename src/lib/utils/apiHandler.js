@@ -51,7 +51,22 @@ export function apiHandler(handlers) {
             await handlers[method](req, res, supabase, user, profile);
         } catch (err) {
             console.error('API Error:', err);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            
+            // Handle form submissions gracefully by redirecting back with error
+            const isForm = req.headers['content-type']?.includes('application/x-www-form-urlencoded');
+            if (isForm) {
+                const referer = req.headers.referer || '/';
+                try {
+                    // Try to parse referer as a full URL (if absolute)
+                    const url = new URL(referer, `http://${req.headers.host}`);
+                    url.searchParams.set('error', err.message);
+                    return res.redirect(303, url.toString());
+                } catch (e) {
+                    return res.redirect(303, referer);
+                }
+            }
+            
+            return res.status(400).json({ error: err.message || 'Error interno del servidor' });
         }
     };
 }

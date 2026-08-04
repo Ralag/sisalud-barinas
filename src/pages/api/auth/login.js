@@ -19,8 +19,8 @@ export default async function handler(req, res) {
 
     const supabase = createServerSupabaseClient({ req, res });
 
-    // Since users log in with username, we format it to the email pattern used in the system
-    const email = `${username}@sisalud.local`;
+    // Allow logging in with full email, or append @sisalud.local for short usernames
+    const email = username.includes('@') ? username : `${username}@sisalud.local`;
 
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
