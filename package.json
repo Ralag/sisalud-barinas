@@ -1,0 +1,33 @@
+{
+  "name": "sisalud",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sistema Informático de Salud — Base de Datos Médicas para el sistema público de salud venezolano",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "node --test tests/**/*.test.js"
+  },
+  "keywords": [
+    "salud",
+    "medicina",
+    "venezuela",
+    "historia-clinica",
+    "supabase"
+  ],
+  "author": "SISALUD Team",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.0",
+    "next": "^16.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.0"
+  }
+}

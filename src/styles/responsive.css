@@ -1,0 +1,221 @@
+/* src/styles/responsive.css - SISALUD Media Queries */
+
+/* 
+ * MOBILE FIRST APPROACH
+ * Base styles in globals.css, forms.css, components.css apply to all screens.
+ * These media queries progressively enhance the UI for larger devices.
+ */
+
+/* TABLET (768px and up) */
+@media (min-width: 768px) {
+  /* Layout adjustments */
+  .main-content {
+    padding: 24px 32px;
+  }
+
+  .page-header {
+    margin-bottom: 32px;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  /* Form Layouts */
+  .form-row {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .form-group {
+    flex: 1;
+  }
+
+  .form-actions {
+    position: static;
+    background: transparent;
+    border-top: none;
+    padding: 24px 0 0 0;
+    margin: 0;
+    justify-content: flex-end;
+  }
+
+  /* Medical Specific Grids */
+  .vitals-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .patient-info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .record-vitals-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Sidebar and Header adjustments */
+  .sidebar {
+    display: block;
+    width: 240px;
+    z-index: 90;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+  }
+
+  .header-nav {
+    display: flex;
+    gap: 24px;
+  }
+
+  .header-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+/* DESKTOP (1024px and up) */
+@media (min-width: 1024px) {
+  /* Offset content for fixed sidebar */
+  .main-content {
+    margin-left: 240px;
+    max-width: calc(100% - 240px);
+    padding: 32px 48px;
+  }
+
+  /* Grids expand */
+  .vitals-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .patient-info-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Record View enhancements */
+  .record-view {
+    padding: 32px 48px;
+  }
+  
+  .record-header {
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  /* History Table: convert from mobile cards to actual table (if using markup that supports it) */
+  .history-item {
+    display: table-row;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* If relying on flex table */
+  .history-table.flex-table .history-item {
+    flex-direction: row;
+    align-items: center;
+    border-radius: 0;
+    border-bottom: 1px solid var(--color-border);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+/* LARGE DESKTOP (1440px and up) */
+@media (min-width: 1440px) {
+  .main-content {
+    max-width: 1200px;
+    margin-left: calc(50% - 600px + 120px); /* Center in remaining space */
+  }
+
+  .card {
+    padding: 24px;
+  }
+  
+  .form-section {
+    padding: 32px;
+  }
+}
+
+/* VERY SMALL PHONES (360px and down) */
+@media (max-width: 360px) {
+  :root {
+    --radius-lg: 8px;
+  }
+
+  .main-content {
+    padding: 12px;
+  }
+
+  .patient-info-grid, 
+  .vitals-grid, 
+  .stats-grid, 
+  .record-vitals-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 0 16px;
+    font-size: 0.875rem;
+  }
+
+  .card {
+    padding: 12px;
+  }
+}
+
+/* PRINT STYLES */
+@media print {
+  body {
+    background-color: #fff;
+    color: #000;
+  }
+
+  .header,
+  .sidebar,
+  .btn,
+  .form-actions,
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+
+  .main-content {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .card, 
+  .form-section, 
+  .record-view {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.875rem;
+    color: #555;
+  }
+
+  .patient-tag {
+    border: 1px solid #000;
+    color: #000;
+  }
+}

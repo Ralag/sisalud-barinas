@@ -1,0 +1,222 @@
+/* src/styles/forms.css - SISALUD Forms Stylesheet */
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.form-required {
+  color: var(--color-danger);
+  margin-left: 4px;
+}
+
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: 6px;
+}
+
+.form-error {
+  font-size: 0.75rem;
+  color: var(--color-danger);
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* Inputs */
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  min-height: 48px; /* Touch-friendly size */
+  font-size: 16px; /* Prevents iOS auto-zoom */
+  font-family: var(--font-family);
+  padding: 10px 14px;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+  padding-top: 12px;
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232c3e50%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px top 50%;
+  background-size: 12px auto;
+  padding-right: 40px;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.2);
+}
+
+.form-input:disabled, .form-select:disabled, .form-textarea:disabled {
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+/* Checkboxes & Radios */
+.form-checkbox, .form-radio {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.checkbox-label, .radio-label {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Form Layouts */
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.form-section {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.form-section-title {
+  font-size: 1.125rem;
+  color: var(--color-primary-dark);
+  border-bottom: 2px solid var(--color-bg);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.form-actions {
+  position: sticky;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 16px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: 12px;
+  z-index: 90;
+  margin: 0 -16px -16px -16px; /* Break out of container padding */
+}
+
+/* Medical Specific */
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.vital-input-group {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.vital-input-group .form-input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.vital-unit {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-left: none;
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Search Form */
+.search-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-bar {
+  display: flex;
+  box-shadow: var(--shadow);
+  border-radius: 30px;
+  overflow: hidden;
+  transition: box-shadow var(--transition);
+}
+.search-bar:focus-within {
+  box-shadow: var(--shadow-hover);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  min-height: 56px;
+  padding: 0 24px;
+  font-size: 1.125rem;
+  outline: none;
+  border-radius: 30px 0 0 30px;
+}
+
+.search-btn {
+  border-radius: 0 30px 30px 0;
+  min-height: 56px;
+  padding: 0 32px;
+}
+
+/* Login Form */
+.login-container {
+  max-width: 400px;
+  margin: 8vh auto;
+  padding: 32px 24px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.login-title {
+  text-align: center;
+  font-size: 1.75rem;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: var(--color-text-secondary);
+  margin-bottom: 32px;
+  font-size: 1rem;
+}
