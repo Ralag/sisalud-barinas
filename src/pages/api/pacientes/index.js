@@ -30,16 +30,34 @@ export default apiHandler({
             if (!patientData.parent_cedula) {
                 return res.status(400).json({ error: 'Cédula del representante es requerida para menores' });
             }
-            patientData.cedula = minorService.generateMinorCedula(
-                patientData.parent_cedula,
-                1 // Ideally we count how many minors this parent has, but passing 1 for now
-            );
+            
+            const parentCedulaClean = cedulaService.sanitize(patientData.parent_cedula);
+            if (!parentCedulaClean) {
+                return res.status(400).json({ error: 'Cédula del representante inválida' });
+            }
+            
+            // Find parent ID
+            const { data: parentDataResult } = await supabase
+                .from('patients')
+                .select('id')
+                .eq('cedula', parentCedulaClean)
+                .single();
+                
+            if (!parentDataResult) {
+                return res.status(400).json({ error: 'Representante no encontrado en el sistema. Debe registrarlo primero.' });
+            }
+            
+            patientData.parent_id = parentDataResult.id;
+            patientData.cedula = await minorService.generateMinorCedula(supabase, parentCedulaClean);
         } else {
             if (!patientData.cedula) {
                 return res.status(400).json({ error: 'Cédula es requerida' });
             }
             patientData.cedula = cedulaService.sanitize(patientData.cedula);
         }
+
+        // Clean up virtual fields that don't exist in the database table
+        delete patientData.parent_cedula;
 
         // Format allergies and chronic conditions
         if (patientData.allergies && typeof patientData.allergies === 'string') {
