@@ -3,7 +3,7 @@ import Layout from '@/components/Layout';
 import { withAuth } from '@/lib/utils/withAuth';
 import { ROLES, GENDERS, BLOOD_TYPES } from '@/lib/utils/constants';
 
-export default function RegistrarPaciente({ user, profile, initialCedula }) {
+export default function RegistrarPaciente({ user, profile, initialCedula, error }) {
     return (
         <Layout user={user} profile={profile} title="Registrar Paciente - SISALUD">
             <div className="card">
@@ -11,6 +11,7 @@ export default function RegistrarPaciente({ user, profile, initialCedula }) {
                     <h2>Registrar Nuevo Paciente</h2>
                 </div>
                 <div className="card-body">
+                    {error && <div className="alert alert-error mb-4">{error}</div>}
                     <form method="POST" action="/api/pacientes">
                         <fieldset className="mb-4">
                             <legend className="font-bold text-lg mb-2">Datos Personales</legend>
@@ -121,13 +122,14 @@ export default function RegistrarPaciente({ user, profile, initialCedula }) {
 }
 
 export const getServerSideProps = withAuth(async (context, supabase, user, profile) => {
-    const { cedula } = context.query;
+    const { cedula, error } = context.query;
     
     return {
         props: {
             user,
             profile,
-            initialCedula: cedula || ''
+            initialCedula: cedula || '',
+            error: error || null
         }
     };
 });
