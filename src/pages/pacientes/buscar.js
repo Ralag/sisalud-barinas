@@ -43,8 +43,13 @@ export default function BuscarPaciente({ user, profile, query, results, error })
 }
 
 export const getServerSideProps = withAuth(async (context, supabase, user, profile) => {
-    const { q, cedula } = context.query;
-    const searchQuery = cedula || q;
+    const { q, cedula, cedula_prefix, cedula_number } = context.query;
+    let searchQuery = cedula || q;
+    
+    // Combine if separated
+    if (!searchQuery && cedula_prefix && cedula_number) {
+        searchQuery = `${cedula_prefix}${cedula_number}`;
+    }
 
     if (!searchQuery) {
         return { props: { user, profile, query: '', results: null } };

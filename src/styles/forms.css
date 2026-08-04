@@ -185,10 +185,43 @@
   flex: 1;
   border: none;
   min-height: 56px;
-  padding: 0 24px;
+  padding: 0 16px;
   font-size: 1.125rem;
   outline: none;
+}
+
+.search-select {
+  border: none;
+  background-color: var(--color-bg);
+  padding: 0 12px 0 20px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text);
   border-radius: 30px 0 0 30px;
+  outline: none;
+  border-right: 1px solid var(--color-border);
+  cursor: pointer;
+  appearance: none;
+}
+
+/* Input groups (Cedula V-1234) */
+.input-group {
+  display: flex;
+  width: 100%;
+}
+.input-group-prefix {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+  width: 70px;
+  background-color: var(--color-bg);
+  padding-left: 12px;
+  padding-right: 8px;
+}
+.input-group-input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  flex: 1;
 }
 
 .search-btn {

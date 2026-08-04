@@ -26,11 +26,23 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="form-group">
                                     <label className="form-label" htmlFor="cedula">Cédula</label>
-                                    <input className="form-input" type="text" id="cedula" name="cedula" defaultValue={initialCedula} required />
+                                    <div className="input-group">
+                                        <select name="cedula_prefix" className="form-select input-group-prefix" defaultValue={initialCedula ? initialCedula.charAt(0).toUpperCase() : 'V'}>
+                                            <option value="V">V</option>
+                                            <option value="E">E</option>
+                                        </select>
+                                        <input className="form-input input-group-input" type="text" id="cedula" name="cedula_number" defaultValue={initialCedula.replace(/^[VE]/i, '')} required />
+                                    </div>
                                 </div>
                                 <div className="form-group" style={{ display: 'none' }} id="parent_cedula_group">
                                     <label className="form-label" htmlFor="parent_cedula">Cédula del Representante</label>
-                                    <input className="form-input" type="text" id="parent_cedula" name="parent_cedula" />
+                                    <div className="input-group">
+                                        <select name="parent_cedula_prefix" className="form-select input-group-prefix">
+                                            <option value="V">V</option>
+                                            <option value="E">E</option>
+                                        </select>
+                                        <input className="form-input input-group-input" type="text" id="parent_cedula" name="parent_cedula_number" />
+                                    </div>
                                 </div>
                                 
                                 <div className="form-group">

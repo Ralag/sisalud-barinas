@@ -22,6 +22,14 @@ export default apiHandler({
         }
 
         let patientData = { ...req.body };
+
+        // Combine prefix and number if they were sent separately
+        if (patientData.cedula_number && patientData.cedula_prefix) {
+            patientData.cedula = `${patientData.cedula_prefix}${patientData.cedula_number}`;
+        }
+        if (patientData.parent_cedula_number && patientData.parent_cedula_prefix) {
+            patientData.parent_cedula = `${patientData.parent_cedula_prefix}${patientData.parent_cedula_number}`;
+        }
         
         // Handle boolean conversion for checkbox
         patientData.is_minor = patientData.is_minor === 'on' || patientData.is_minor === true;

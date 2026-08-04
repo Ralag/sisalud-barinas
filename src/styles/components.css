@@ -43,6 +43,26 @@
   margin-bottom: 20px;
 }
 
+.patient-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.patient-info-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.patient-info-value {
+  font-size: 1rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
 .patient-tags {
   display: flex;
   flex-wrap: wrap;

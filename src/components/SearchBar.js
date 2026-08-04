@@ -6,15 +6,19 @@ export default function SearchBar({ initialValue = '', action = '/pacientes/busc
     return (
         <div className="search-container">
             <form method="GET" action={action} className="search-bar">
+                <select name="cedula_prefix" className="search-select">
+                    <option value="V">V</option>
+                    <option value="E">E</option>
+                </select>
                 <input
                     type="text"
-                    name="cedula"
+                    name="cedula_number"
                     className="search-input"
-                    placeholder="Buscar por cédula (ej: V12345678)"
-                    value={value}
+                    placeholder="Número de cédula (ej: 12345678)"
+                    value={value.replace(/^[VE]/i, '')}
                     onChange={(e) => setValue(e.target.value)}
                     autoComplete="off"
-                    aria-label="Cédula del paciente"
+                    aria-label="Número de cédula"
                 />
                 <button type="submit" className="search-btn btn btn-primary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
