@@ -16,7 +16,6 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error,
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState(error || null);
 
-    // Estado del formulario
     const [formData, setFormData] = useState({
         is_minor: false,
         parent_cedula_prefix: 'V',
@@ -25,16 +24,21 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error,
         cedula_number: initialCedula ? initialCedula.substring(1) : '',
         first_name: '',
         last_name: '',
+        birth_name: '',
         birth_date: '',
         gender: '',
+        gender_identity: '',
+        email: '',
         phone: '',
         state: 'Barinas',
         municipality: '',
         address: '',
         emergency_contact_name: '',
         emergency_contact_phone: '',
+        emergency_contact_relationship: '',
         
         // Step 2
+        insurance_type: 'ninguna',
         insurance_number: '',
         assigned_center_id: '',
         assigned_doctor_id: '',
@@ -212,11 +216,21 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error,
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                                <div className="form-group">
+                                    <label className="form-label text-gray-700">Nombre Registrado al Nacer</label>
+                                    <input className="form-input" type="text" name="birth_name" value={formData.birth_name} onChange={handleInputChange} placeholder="Solo si difiere del actual" />
+                                </div>
                                 <div className="form-group">
                                     <label className="form-label font-bold text-gray-700">Fecha de Nacimiento</label>
                                     <input className="form-input" type="date" name="birth_date" value={formData.birth_date} onChange={handleInputChange} required />
                                 </div>
+                                <div className="form-group">
+                                    <label className="form-label text-gray-700">Correo Electrónico</label>
+                                    <input className="form-input" type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="ejemplo@correo.com" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                                 <div className="form-group">
                                     <label className="form-label font-bold text-gray-700">Sexo Biológico</label>
                                     <div className="flex gap-4 mt-2">
@@ -229,6 +243,10 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error,
                                             <span>Femenino</span>
                                         </label>
                                     </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label text-gray-700">Identidad de Género (si difiere)</label>
+                                    <input className="form-input" type="text" name="gender_identity" value={formData.gender_identity} onChange={handleInputChange} placeholder="Ej: Transgénero, No Binario (dejar en blanco si es igual al sexo)" />
                                 </div>
                             </div>
 
@@ -243,10 +261,25 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error,
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-lg border">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg border">
                                 <div className="form-group">
                                     <label className="form-label text-gray-700">Nombre Contacto Emergencia</label>
                                     <input className="form-input" type="text" name="emergency_contact_name" value={formData.emergency_contact_name} onChange={handleInputChange} placeholder="Familiar, amigo..." />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label text-gray-700">Parentesco</label>
+                                    <select className="form-select" name="emergency_contact_relationship" value={formData.emergency_contact_relationship} onChange={handleInputChange}>
+                                        <option value="">Seleccione...</option>
+                                        <option value="Padre">Padre</option>
+                                        <option value="Madre">Madre</option>
+                                        <option value="Esposo/a">Esposo/a</option>
+                                        <option value="Hijo/a">Hijo/a</option>
+                                        <option value="Hermano/a">Hermano/a</option>
+                                        <option value="Abuelo/a">Abuelo/a</option>
+                                        <option value="Tío/a">Tío/a</option>
+                                        <option value="Amigo/a">Amigo/a</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label text-gray-700">Teléfono Emergencia</label>
@@ -283,9 +316,20 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error,
                                 </div>
                             </div>
 
-                            <div className="form-group max-w-md">
-                                <label className="form-label font-bold text-gray-700">N° de Seguro Social o Póliza Privada</label>
-                                <input className="form-input text-lg" type="text" name="insurance_number" value={formData.insurance_number} onChange={handleInputChange} placeholder="Dejar en blanco si no aplica" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="form-group">
+                                    <label className="form-label font-bold text-gray-700">Tipo de Cobertura de Salud</label>
+                                    <select className="form-select text-lg" name="insurance_type" value={formData.insurance_type} onChange={handleInputChange}>
+                                        <option value="ninguna">Sin Cobertura</option>
+                                        <option value="publica">Cobertura Pública (IVSS)</option>
+                                        <option value="privada">Seguro Privado</option>
+                                        <option value="mixta">Mixta (Pública + Privada)</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label font-bold text-gray-700">N° de Afiliación / Póliza</label>
+                                    <input className="form-input text-lg" type="text" name="insurance_number" value={formData.insurance_number} onChange={handleInputChange} placeholder="Dejar en blanco si no aplica" />
+                                </div>
                             </div>
                         </div>
 

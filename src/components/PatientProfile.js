@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { GENDERS } from '@/lib/utils/constants';
+import { GENDERS, INSURANCE_TYPES } from '@/lib/utils/constants';
+import PharmacyTab from '@/components/ehr/PharmacyTab';
+import LabResultsTab from '@/components/ehr/LabResultsTab';
+import HospitalizationsTab from '@/components/ehr/HospitalizationsTab';
+import MentalHealthTab from '@/components/ehr/MentalHealthTab';
 
 function calculateAge(birthDate) {
     if (!birthDate) return 'N/A';
@@ -61,32 +65,26 @@ export default function PatientProfile({ patient, parent, records = [] }) {
                 </div>
             </div>
 
-            {/* Menú de Pestañas (Tabs) */}
-            <div className="ehr-tabs flex overflow-x-auto border-b border-gray-200 bg-white">
-                <button 
-                    className={`px-6 py-4 font-bold text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'resumen' ? 'border-b-4 border-primary text-primary bg-blue-50/50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
-                    onClick={() => setActiveTab('resumen')}
-                >
-                    Resumen Clínico
-                </button>
-                <button 
-                    className={`px-6 py-4 font-bold text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'demograficos' ? 'border-b-4 border-primary text-primary bg-blue-50/50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
-                    onClick={() => setActiveTab('demograficos')}
-                >
-                    Datos Demográficos
-                </button>
-                <button 
-                    className={`px-6 py-4 font-bold text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'antecedentes' ? 'border-b-4 border-primary text-primary bg-blue-50/50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
-                    onClick={() => setActiveTab('antecedentes')}
-                >
-                    Antecedentes Permanentes
-                </button>
-                <button 
-                    className={`px-6 py-4 font-bold text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'consultas' ? 'border-b-4 border-primary text-primary bg-blue-50/50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
-                    onClick={() => setActiveTab('consultas')}
-                >
-                    Consultas ({records.length})
-                </button>
+            {/* Menú de Pestañas (Tabs) — 8 Categorías HCEN */}
+            <div className="ehr-tabs flex overflow-x-auto border-b border-gray-200 bg-white" style={{scrollbarWidth:'thin'}}>
+                {[
+                    { id: 'resumen', label: '📋 Resumen', num: null },
+                    { id: 'demograficos', label: '👤 Demográficos', num: null },
+                    { id: 'antecedentes', label: '🧬 Antecedentes', num: null },
+                    { id: 'consultas', label: '🩺 Consultas', num: records.length },
+                    { id: 'farmacia', label: '💊 Farmacia', num: null },
+                    { id: 'laboratorio', label: '🔬 Laboratorio', num: null },
+                    { id: 'hospitalizaciones', label: '🏥 Hospitalización', num: null },
+                    { id: 'salud_mental', label: '🧠 Salud Mental', num: null },
+                ].map(tab => (
+                    <button
+                        key={tab.id}
+                        className={`px-5 py-4 font-bold text-xs uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === tab.id ? 'border-b-4 border-primary text-primary bg-blue-50/50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                        onClick={() => setActiveTab(tab.id)}
+                    >
+                        {tab.label}{tab.num !== null ? ` (${tab.num})` : ''}
+                    </button>
+                ))}
             </div>
 
             {/* Contenido de Pestañas */}
@@ -200,6 +198,15 @@ export default function PatientProfile({ patient, parent, records = [] }) {
                                 <span>{formatDate(patient.birth_date)}</span>
                             </div>
                             <div className="ehr-info-block">
+                                <label>Nombre Registrado al Nacer</label>
+                                <span>{patient.birth_name || 'Mismo que el actual'}</span>
+                            </div>
+                            <div className="ehr-info-block">
+                                <label>Identidad de Género</label>
+                                <span>{patient.gender_identity || GENDERS[patient.gender]}</span>
+                            </div>
+
+                            <div className="ehr-info-block">
                                 <label>Teléfono Personal</label>
                                 <span>{patient.phone || 'No registrado'}</span>
                             </div>
@@ -207,10 +214,11 @@ export default function PatientProfile({ patient, parent, records = [] }) {
                                 <label>Correo Electrónico</label>
                                 <span>{patient.email || 'No registrado'}</span>
                             </div>
+                            <div className="ehr-info-block"></div>
                             
                             <div className="ehr-info-block md:col-span-3 border-t pt-4">
-                                <label>Dirección de Residencia</label>
-                                <span>{patient.address || 'No registrada'} - {patient.municipality}, {patient.state}</span>
+                                <label>Dirección de Residencia Habitual</label>
+                                <span>{patient.address || 'No registrada'} — {patient.municipality}, {patient.state}</span>
                             </div>
 
                             <div className="ehr-info-block border-t pt-4">
@@ -218,22 +226,31 @@ export default function PatientProfile({ patient, parent, records = [] }) {
                                 <span>{patient.emergency_contact_name || 'No registrado'}</span>
                             </div>
                             <div className="ehr-info-block border-t pt-4">
+                                <label>Parentesco</label>
+                                <span>{patient.emergency_contact_relationship || 'No indicado'}</span>
+                            </div>
+                            <div className="ehr-info-block border-t pt-4">
                                 <label>Teléfono de Emergencia</label>
                                 <span>{patient.emergency_contact_phone || 'No registrado'}</span>
                             </div>
-                            <div className="ehr-info-block border-t pt-4"></div>
 
                             <div className="ehr-info-block bg-gray-50 p-4 rounded border">
-                                <label>N° Seguro Social / Privado</label>
+                                <label>Tipo de Cobertura de Salud</label>
+                                <span className="font-bold">{INSURANCE_TYPES[patient.insurance_type] || 'Sin Cobertura'}</span>
+                            </div>
+                            <div className="ehr-info-block bg-gray-50 p-4 rounded border">
+                                <label>N° Seguro Social / Póliza</label>
                                 <span className="font-bold">{patient.insurance_number || 'Ninguno'}</span>
                             </div>
-                            <div className="ehr-info-block bg-gray-50 p-4 rounded border">
-                                <label>Centro Asignado (Base)</label>
-                                <span className="font-bold">{patient.assigned_center_id || 'Libre Elección'}</span>
+                            <div className="ehr-info-block bg-gray-50 p-4 rounded border"></div>
+
+                            <div className="ehr-info-block bg-blue-50 p-4 rounded border border-blue-200">
+                                <label>Centro de Salud Asignado</label>
+                                <span className="font-bold text-primary">{patient.assigned_center_id || 'Libre Elección'}</span>
                             </div>
-                            <div className="ehr-info-block bg-gray-50 p-4 rounded border">
+                            <div className="ehr-info-block bg-blue-50 p-4 rounded border border-blue-200 md:col-span-2">
                                 <label>Médico de Cabecera</label>
-                                <span className="font-bold">{patient.assigned_doctor_id ? 'Asignado' : 'No Asignado'}</span>
+                                <span className="font-bold text-primary">{patient.assigned_doctor_id ? 'Asignado' : 'No Asignado'}</span>
                             </div>
                         </div>
 
@@ -367,6 +384,34 @@ export default function PatientProfile({ patient, parent, records = [] }) {
                                 ))}
                             </div>
                         )}
+                    </div>
+                )}
+
+                {/* === TAB 5: FARMACIA Y VACUNAS === */}
+                {activeTab === 'farmacia' && (
+                    <div className="animate-fade-in">
+                        <PharmacyTab patientId={patient.id} />
+                    </div>
+                )}
+
+                {/* === TAB 6: LABORATORIO E IMÁGENES === */}
+                {activeTab === 'laboratorio' && (
+                    <div className="animate-fade-in">
+                        <LabResultsTab patientId={patient.id} />
+                    </div>
+                )}
+
+                {/* === TAB 7: HOSPITALIZACIONES === */}
+                {activeTab === 'hospitalizaciones' && (
+                    <div className="animate-fade-in">
+                        <HospitalizationsTab patientId={patient.id} />
+                    </div>
+                )}
+
+                {/* === TAB 8: SALUD MENTAL === */}
+                {activeTab === 'salud_mental' && (
+                    <div className="animate-fade-in">
+                        <MentalHealthTab patientId={patient.id} />
                     </div>
                 )}
             </div>
