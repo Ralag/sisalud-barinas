@@ -20,22 +20,22 @@ export default function Dashboard({ user, profile, stats, recentConsultations })
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="card text-center p-4">
-                        <h3 className="text-secondary">Pacientes Hoy</h3>
-                        <p className="text-3xl font-bold">{stats.patientsToday}</p>
+                <div className="stats-grid mb-4">
+                    <div className="card text-center p-4 stat-card">
+                        <h3 className="text-secondary vital-label">Pacientes Hoy</h3>
+                        <p className="text-3xl font-bold vital-value">{stats.patientsToday}</p>
                     </div>
-                    <div className="card text-center p-4">
-                        <h3 className="text-secondary">Consultas Hoy</h3>
-                        <p className="text-3xl font-bold">{stats.consultationsToday}</p>
+                    <div className="card text-center p-4 stat-card">
+                        <h3 className="text-secondary vital-label">Consultas Hoy</h3>
+                        <p className="text-3xl font-bold vital-value">{stats.consultationsToday}</p>
                     </div>
-                    <div className="card text-center p-4">
-                        <h3 className="text-secondary">Total Pacientes</h3>
-                        <p className="text-3xl font-bold">{stats.totalPatients}</p>
+                    <div className="card text-center p-4 stat-card">
+                        <h3 className="text-secondary vital-label">Total Pacientes</h3>
+                        <p className="text-3xl font-bold vital-value">{stats.totalPatients}</p>
                     </div>
-                    <div className="card text-center p-4">
-                        <h3 className="text-secondary">Total Consultas</h3>
-                        <p className="text-3xl font-bold">{stats.totalConsultations}</p>
+                    <div className="card text-center p-4 stat-card">
+                        <h3 className="text-secondary vital-label">Total Consultas</h3>
+                        <p className="text-3xl font-bold vital-value">{stats.totalConsultations}</p>
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@ export default function Dashboard({ user, profile, stats, recentConsultations })
                             <p className="text-secondary">No hay consultas recientes.</p>
                         ) : (
                             <div className="table-responsive">
-                                <table className="table">
+                                <table className="table history-table">
                                     <thead>
                                         <tr>
                                             <th>Fecha</th>
@@ -89,7 +89,11 @@ export default function Dashboard({ user, profile, stats, recentConsultations })
 }
 
 export const getServerSideProps = withAuth(async (context, supabase, user, profile) => {
-    // Mock fetching stats
+    // Get start of today in ISO string for queries
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayISO = today.toISOString();
+
     const stats = {
         patientsToday: 0,
         consultationsToday: 0,
@@ -97,10 +101,53 @@ export const getServerSideProps = withAuth(async (context, supabase, user, profi
         totalConsultations: 0
     };
 
-    // Mock fetching recent consultations
-    const recentConsultations = [];
+    try {
+        // Fetch total patients
+        const { count: totalPatients } = await supabase
+            .from('patients')
+            .select('*', { count: 'exact', head: true });
+            
+        // Fetch patients today
+        const { count: patientsToday } = await supabase
+            .from('patients')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', todayISO);
 
-    // In a real implementation we would fetch these from Supabase using patientService/medicalRecordService
+        // Fetch total consultations
+        const { count: totalConsultations } = await supabase
+            .from('medical_records')
+            .select('*', { count: 'exact', head: true });
+
+        // Fetch consultations today
+        const { count: consultationsToday } = await supabase
+            .from('medical_records')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', todayISO);
+
+        stats.totalPatients = totalPatients || 0;
+        stats.patientsToday = patientsToday || 0;
+        stats.totalConsultations = totalConsultations || 0;
+        stats.consultationsToday = consultationsToday || 0;
+
+    } catch (e) {
+        console.error('Error fetching stats:', e);
+    }
+
+    // Fetch recent consultations
+    let recentConsultations = [];
+    try {
+        const { data } = await supabase
+            .from('medical_records')
+            .select('id, created_at, record_type, patients(first_name, last_name), user_profiles(first_name, last_name)')
+            .order('created_at', { ascending: false })
+            .limit(5);
+            
+        if (data) {
+            recentConsultations = data;
+        }
+    } catch (e) {
+        console.error('Error fetching recent consultations:', e);
+    }
 
     return {
         props: {
