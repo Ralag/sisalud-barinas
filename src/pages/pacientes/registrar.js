@@ -3,7 +3,7 @@ import Layout from '@/components/Layout';
 import { withAuth } from '@/lib/utils/withAuth';
 import { ROLES, GENDERS, BLOOD_TYPES } from '@/lib/utils/constants';
 
-export default function RegistrarPaciente({ user, profile, initialCedula, error }) {
+export default function RegistrarPaciente({ user, profile, initialCedula, error, centers, doctors }) {
     return (
         <Layout user={user} profile={profile} title="Registrar Paciente - SISALUD">
             <div className="card">
@@ -14,7 +14,7 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error 
                     {error && <div className="alert alert-error mb-4">{error}</div>}
                     <form method="POST" action="/api/pacientes">
                         <fieldset className="mb-4">
-                            <legend className="font-bold text-lg mb-2">Datos Personales</legend>
+                            <legend className="font-bold text-lg mb-2">Datos Personales y Demográficos</legend>
                             
                             <div className="form-group">
                                 <label className="form-label" htmlFor="is_minor">
@@ -100,8 +100,37 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error 
                         </fieldset>
 
                         <fieldset className="mb-4">
-                            <legend className="font-bold text-lg mb-2">Información Médica Base</legend>
-                            <div className="grid grid-cols-1 gap-4">
+                            <legend className="font-bold text-lg mb-2">Datos de Afiliación y Sistema</legend>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="insurance_number">N° Seguro/Seguridad Social</label>
+                                    <input className="form-input" type="text" id="insurance_number" name="insurance_number" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="assigned_center_id">Centro de Salud Asignado</label>
+                                    <select className="form-select" id="assigned_center_id" name="assigned_center_id">
+                                        <option value="">Ninguno (Por Defecto)</option>
+                                        {centers && centers.map(c => (
+                                            <option key={c.id} value={c.id}>{c.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="assigned_doctor_id">Médico de Cabecera Asignado</label>
+                                    <select className="form-select" id="assigned_doctor_id" name="assigned_doctor_id">
+                                        <option value="">Ninguno</option>
+                                        {doctors && doctors.map(d => (
+                                            <option key={d.id} value={d.id}>{d.full_name} ({d.cedula})</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset className="mb-4">
+                            <legend className="font-bold text-lg mb-2">Antecedentes y Perfil de Salud Permanente</legend>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div className="form-group">
                                     <label className="form-label" htmlFor="blood_type">Grupo Sanguíneo</label>
                                     <select className="form-select" id="blood_type" name="blood_type">
@@ -111,13 +140,41 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error 
                                         ))}
                                     </select>
                                 </div>
+                                <div className="form-group" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '14px' }}>
+                                    <label className="checkbox-label" htmlFor="organ_donor">
+                                        <input type="checkbox" id="organ_donor" name="organ_donor" className="form-checkbox" />
+                                        Donante de Órganos Registrado
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="form-group">
-                                    <label className="form-label" htmlFor="allergies">Alergias (separadas por coma)</label>
-                                    <input className="form-input" type="text" id="allergies" name="allergies" placeholder="Ej: Penicilina, Maní" />
+                                    <label className="form-label" htmlFor="allergies">Alergias / Reacciones Adversas</label>
+                                    <input className="form-input" type="text" id="allergies" name="allergies" placeholder="Ej: Penicilina, Maní (separadas por coma)" />
+                                    <span className="form-hint">Incluya medicamentos, alimentos, látex, etc.</span>
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label" htmlFor="chronic_conditions">Condiciones Crónicas (separadas por coma)</label>
-                                    <input className="form-input" type="text" id="chronic_conditions" name="chronic_conditions" placeholder="Ej: Hipertensión, Asma" />
+                                    <label className="form-label" htmlFor="chronic_conditions">Condiciones Crónicas / Patologías de base</label>
+                                    <input className="form-input" type="text" id="chronic_conditions" name="chronic_conditions" placeholder="Ej: Diabetes Tipo 2, Hipertensión" />
+                                </div>
+                                
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="disabilities">Discapacidades / Cond. Funcionales</label>
+                                    <input className="form-input" type="text" id="disabilities" name="disabilities" placeholder="Ej: Discapacidad visual, Motora" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="surgeries">Historial de Cirugías</label>
+                                    <input className="form-input" type="text" id="surgeries" name="surgeries" placeholder="Ej: Apendicectomía (2015)" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="implants">Dispositivos e Implantes</label>
+                                    <input className="form-input" type="text" id="implants" name="implants" placeholder="Ej: Marcapasos, Malla abdominal" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="family_history">Antecedentes Familiares</label>
+                                    <input className="form-input" type="text" id="family_history" name="family_history" placeholder="Ej: Madre con Cáncer de Mama" />
                                 </div>
                             </div>
                         </fieldset>
@@ -136,12 +193,28 @@ export default function RegistrarPaciente({ user, profile, initialCedula, error 
 export const getServerSideProps = withAuth(async (context, supabase, user, profile) => {
     const { cedula, error } = context.query;
     
+    // Fetch centers and doctors for assignment dropdowns
+    let centers = [];
+    let doctors = [];
+    
+    try {
+        const { data: centersData } = await supabase.from('health_centers').select('id, name').order('name');
+        if (centersData) centers = centersData;
+        
+        const { data: doctorsData } = await supabase.from('user_profiles').select('id, full_name, cedula').eq('role', 'medico').order('full_name');
+        if (doctorsData) doctors = doctorsData;
+    } catch (e) {
+        console.error('Error fetching centers/doctors for registration form', e);
+    }
+    
     return {
         props: {
             user,
             profile,
             initialCedula: cedula || '',
-            error: error || null
+            error: error || null,
+            centers,
+            doctors
         }
     };
 });

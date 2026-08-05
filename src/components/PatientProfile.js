@@ -24,8 +24,12 @@ export default function PatientProfile({ patient, parent }) {
             <div className="card-header">
                 <div>
                     <h2 className="patient-name">{patient.first_name} {patient.last_name}</h2>
-                    <span className="badge badge-primary patient-cedula">{patient.cedula}</span>
-                    {patient.is_minor && <span className="badge badge-warning">Menor de Edad</span>}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        <span className="badge badge-primary patient-cedula">{patient.cedula}</span>
+                        {patient.is_minor && <span className="badge badge-warning">Menor de Edad</span>}
+                        {patient.organ_donor && <span className="badge" style={{backgroundColor: '#e74c3c', color: 'white'}}>Donante de Órganos ❤️</span>}
+                        {patient.insurance_number && <span className="badge badge-secondary">Seguro: {patient.insurance_number}</span>}
+                    </div>
                 </div>
             </div>
             <div className="card-body">
@@ -69,29 +73,71 @@ export default function PatientProfile({ patient, parent }) {
                 </div>
                 
                 {patient.is_minor && parent && (
-                    <div className="patient-parent-info">
+                    <div className="patient-parent-info mb-4">
                         <h4>Representante Legal</h4>
                         <p>{parent.first_name} {parent.last_name} — <span className="badge badge-primary">{parent.cedula}</span></p>
                     </div>
                 )}
                 
-                <div className="patient-tags-section">
-                    <h4>Alergias</h4>
-                    <div className="patient-tags">
-                        {allergies.length > 0 
-                            ? allergies.map((a, i) => <span key={i} className="patient-tag patient-tag-allergy">{a}</span>)
-                            : <span className="text-secondary">Ninguna registrada</span>
-                        }
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="patient-tags-section">
+                        <h4>Alergias / Reacciones Adversas</h4>
+                        <div className="patient-tags">
+                            {allergies.length > 0 
+                                ? allergies.map((a, i) => <span key={i} className="patient-tag patient-tag-allergy">{a}</span>)
+                                : <span className="text-secondary">Ninguna registrada</span>
+                            }
+                        </div>
                     </div>
-                </div>
-                
-                <div className="patient-tags-section">
-                    <h4>Condiciones Crónicas</h4>
-                    <div className="patient-tags">
-                        {conditions.length > 0 
-                            ? conditions.map((c, i) => <span key={i} className="patient-tag patient-tag-condition">{c}</span>)
-                            : <span className="text-secondary">Ninguna registrada</span>
-                        }
+                    
+                    <div className="patient-tags-section">
+                        <h4>Condiciones Crónicas</h4>
+                        <div className="patient-tags">
+                            {conditions.length > 0 
+                                ? conditions.map((c, i) => <span key={i} className="patient-tag patient-tag-condition">{c}</span>)
+                                : <span className="text-secondary">Ninguna registrada</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div className="patient-tags-section">
+                        <h4>Discapacidades / Cond. Funcionales</h4>
+                        <div className="patient-tags">
+                            {patient.disabilities && patient.disabilities.length > 0 
+                                ? patient.disabilities.map((d, i) => <span key={i} className="patient-tag" style={{backgroundColor: '#f39c12', color: '#fff'}}>{d}</span>)
+                                : <span className="text-secondary">Ninguna registrada</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div className="patient-tags-section">
+                        <h4>Cirugías e Intervenciones</h4>
+                        <div className="patient-tags">
+                            {patient.surgeries && patient.surgeries.length > 0 
+                                ? patient.surgeries.map((s, i) => <span key={i} className="patient-tag" style={{backgroundColor: '#34495e', color: '#fff'}}>{s}</span>)
+                                : <span className="text-secondary">Ninguna registrada</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div className="patient-tags-section">
+                        <h4>Dispositivos e Implantes</h4>
+                        <div className="patient-tags">
+                            {patient.implants && patient.implants.length > 0 
+                                ? patient.implants.map((imp, i) => <span key={i} className="patient-tag" style={{backgroundColor: '#95a5a6', color: '#fff'}}>{imp}</span>)
+                                : <span className="text-secondary">Ninguno registrado</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div className="patient-tags-section">
+                        <h4>Antecedentes Familiares</h4>
+                        <div className="patient-tags">
+                            {patient.family_history && patient.family_history.length > 0 
+                                ? patient.family_history.map((fh, i) => <span key={i} className="patient-tag" style={{backgroundColor: '#8e44ad', color: '#fff'}}>{fh}</span>)
+                                : <span className="text-secondary">Ninguno registrado</span>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

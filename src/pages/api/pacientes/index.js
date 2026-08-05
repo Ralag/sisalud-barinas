@@ -74,13 +74,16 @@ export default apiHandler({
         // Clean up virtual fields that don't exist in the database table
         delete patientData.parent_cedula;
 
-        // Format allergies and chronic conditions
-        if (patientData.allergies && typeof patientData.allergies === 'string') {
-            patientData.allergies = patientData.allergies.split(',').map(s => s.trim()).filter(Boolean);
-        }
-        if (patientData.chronic_conditions && typeof patientData.chronic_conditions === 'string') {
-            patientData.chronic_conditions = patientData.chronic_conditions.split(',').map(s => s.trim()).filter(Boolean);
-        }
+        // Format JSON arrays (allergies, chronic_conditions, etc)
+        const jsonFields = ['allergies', 'chronic_conditions', 'disabilities', 'surgeries', 'implants', 'family_history'];
+        jsonFields.forEach(field => {
+            if (patientData[field] && typeof patientData[field] === 'string') {
+                patientData[field] = patientData[field].split(',').map(s => s.trim()).filter(Boolean);
+            }
+        });
+
+        // Handle boolean for organ donor
+        patientData.organ_donor = patientData.organ_donor === 'on' || patientData.organ_donor === true;
 
         const newPatient = await patientService.create(supabase, patientData, profile.id);
 
