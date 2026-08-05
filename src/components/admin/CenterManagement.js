@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/utils/supabaseClient';
+import { createBrowserSupabaseClient } from '@/lib/supabase/client';
 
 export default function CenterManagement() {
     const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
+    const supabase = createBrowserSupabaseClient();
 
     useEffect(() => {
         fetchCenters();

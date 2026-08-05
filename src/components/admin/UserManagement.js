@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/utils/supabaseClient';
+import { createBrowserSupabaseClient } from '@/lib/supabase/client';
 
 export default function UserManagement({ profile }) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const supabase = createBrowserSupabaseClient();
 
     useEffect(() => {
         fetchUsers();
