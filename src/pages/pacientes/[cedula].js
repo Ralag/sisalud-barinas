@@ -43,47 +43,7 @@ export default function VerPaciente({ user, profile, patient, records, error }) 
                 )}
             </div>
 
-            <PatientProfile patient={patient} />
-
-            <div className="card mt-4">
-                <div className="card-header">
-                    <h2>Historial de Consultas</h2>
-                </div>
-                <div className="card-body">
-                    {records.length === 0 ? (
-                        <p className="text-secondary">No hay consultas registradas para este paciente.</p>
-                    ) : (
-                        <div className="table-responsive">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Tipo</th>
-                                        <th>Médico</th>
-                                        <th>Centro de Salud</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {records.map(r => (
-                                        <tr key={r.id}>
-                                            <td>{new Date(r.created_at).toLocaleDateString('es-VE')}</td>
-                                            <td>{r.record_type}</td>
-                                            <td>{r.user_profiles?.first_name} {r.user_profiles?.last_name}</td>
-                                            <td>{r.health_centers?.name}</td>
-                                            <td>
-                                                <Link href={`/consultas/${r.id}`} className="text-primary hover:underline">
-                                                    Ver Detalle
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
-            </div>
+            <PatientProfile patient={patient} records={records} profile={profile} />
         </Layout>
     );
 }
