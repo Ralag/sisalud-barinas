@@ -22,10 +22,43 @@ export default function Header({ user, profile }) {
                 </nav>
                 
                 <div className="header-user">
-                    <span className="header-user-name">{profile?.full_name}</span>
-                    <span className={`badge badge-${profile?.role === 'medico' ? 'primary' : profile?.role === 'admin' ? 'warning' : 'success'}`}>
-                        {ROLE_LABELS[profile?.role] || profile?.role}
-                    </span>
+                    <div className="flex flex-col text-right mr-4">
+                        <span className="header-user-name font-bold">{profile?.full_name}</span>
+                        <div className="flex items-center gap-2 justify-end mt-1">
+                            <span className={`badge badge-${profile?.role === 'medico_tratante' ? 'primary' : profile?.role === 'admin' ? 'warning' : 'success'} text-[10px]`}>
+                                {ROLE_LABELS[profile?.role] || profile?.role}
+                            </span>
+                            
+                            {/* CUES Selector if multiple roles exist */}
+                            {profile?.practitioner_roles && profile.practitioner_roles.length > 1 && (
+                                <select 
+                                    className="text-xs bg-gray-100 border border-gray-300 rounded px-1 py-0.5 text-gray-700 max-w-[150px] truncate"
+                                    value={profile.active_cues || ''}
+                                    onChange={async (e) => {
+                                        await fetch('/api/auth/set-cues', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ cuesId: e.target.value })
+                                        });
+                                        window.location.reload();
+                                    }}
+                                    title="Cambiar centro de salud activo"
+                                >
+                                    {profile.practitioner_roles.map(r => (
+                                        <option key={r.health_center_id} value={r.health_center_id}>
+                                            {r.health_centers?.name} ({r.role})
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
+                            {(!profile?.practitioner_roles || profile.practitioner_roles.length <= 1) && (
+                                <span className="text-xs text-gray-500 truncate max-w-[150px]" title={profile?.health_centers?.name}>
+                                    📍 {profile?.health_centers?.name || 'Sin Centro'}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    
                     <form method="POST" action="/api/auth/logout" style={{display:'inline'}}>
                         <button type="submit" className="btn btn-sm btn-secondary header-logout-btn">Salir</button>
                     </form>

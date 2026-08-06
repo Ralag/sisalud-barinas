@@ -347,41 +347,54 @@ export default function PatientProfile({ patient, parent, records = [] }) {
                             </div>
                         ) : (
                             <div className="relative border-l-2 border-primary ml-8 my-8 space-y-8">
-                                {records.map((r, index) => (
-                                    <div key={r.id} className="relative pl-6 pr-4">
-                                        {/* Timeline dot */}
-                                        <div className="absolute w-4 h-4 bg-primary rounded-full -left-[9px] top-1 border-4 border-white shadow"></div>
-                                        
-                                        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div>
-                                                    <span className="text-xs font-bold text-primary uppercase tracking-wider bg-blue-50 px-2 py-1 rounded">
-                                                        {r.record_type}
+                                {records.map((r, index) => {
+                                    const isRestricted = r.security_label === 'R';
+                                    
+                                    return (
+                                        <div key={r.id} className="relative pl-6 pr-4">
+                                            {/* Timeline dot */}
+                                            <div className={`absolute w-4 h-4 ${isRestricted ? 'bg-red-500' : 'bg-primary'} rounded-full -left-[9px] top-1 border-4 border-white shadow`}></div>
+                                            
+                                            <div className={`bg-white border ${isRestricted ? 'border-red-200' : 'border-gray-200'} rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow`}>
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div>
+                                                        <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded ${isRestricted ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-primary'}`}>
+                                                            {r.record_type} {isRestricted && '🔒 PROTEGIDO'}
+                                                        </span>
+                                                        <h4 className="text-lg font-bold text-gray-800 mt-2">
+                                                            {isRestricted ? '[DIAGNÓSTICO PROTEGIDO POR CONFIDENCIALIDAD]' : r.diagnosis}
+                                                        </h4>
+                                                    </div>
+                                                    <span className="text-sm font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                                        {formatDate(r.created_at)}
                                                     </span>
-                                                    <h4 className="text-lg font-bold text-gray-800 mt-2">{r.diagnosis}</h4>
                                                 </div>
-                                                <span className="text-sm font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                                                    {formatDate(r.created_at)}
-                                                </span>
-                                            </div>
-                                            
-                                            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                                                <span className="font-bold text-gray-700">Motivo:</span> {r.reason}
-                                            </p>
-                                            
-                                            <div className="flex justify-between items-center text-xs text-gray-500 border-t pt-3">
-                                                <div className="flex items-center gap-2">
-                                                    <span>👨‍⚕️ Dr/a. {r.user_profiles?.first_name} {r.user_profiles?.last_name}</span>
-                                                    <span>•</span>
-                                                    <span>🏥 {r.health_centers?.name}</span>
+                                                
+                                                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                                                    <span className="font-bold text-gray-700">Motivo:</span> {isRestricted ? '[CONTENIDO PROTEGIDO]' : r.reason}
+                                                </p>
+                                                
+                                                <div className="flex justify-between items-center text-xs text-gray-500 border-t pt-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <span>👨‍⚕️ Dr/a. {r.user_profiles?.first_name} {r.user_profiles?.last_name}</span>
+                                                        <span>•</span>
+                                                        <span>🏥 {r.health_centers?.name}</span>
+                                                    </div>
+                                                    {!isRestricted && (
+                                                        <Link href={`/consultas/${r.id}`} className="font-bold text-primary hover:underline">
+                                                            Ver Historia →
+                                                        </Link>
+                                                    )}
+                                                    {isRestricted && (
+                                                        <button className="font-bold text-red-600 hover:underline" onClick={() => alert('Requiere PIN del paciente o acceso por Emergencia.')}>
+                                                            Desbloquear 🔓
+                                                        </button>
+                                                    )}
                                                 </div>
-                                                <Link href={`/consultas/${r.id}`} className="font-bold text-primary hover:underline">
-                                                    Ver Historia →
-                                                </Link>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>

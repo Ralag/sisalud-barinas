@@ -60,6 +60,24 @@ export const getServerSideProps = withAuth(async (context, supabase, user, profi
 
         const records = await medicalRecordService.getByPatient(supabase, patient.id);
 
+        // --- TRAZABILIDAD Y AUDITORÍA FORENSE ---
+        // Registrar el acceso en la bitácora inmutable
+        try {
+            await supabase.from('auditoria_accesos_medicos').insert([{
+                doctor_id: user.id,
+                cues_id: profile.active_cues || 'DESCONOCIDO',
+                patient_id: patient.id,
+                ip_address: context.req.headers['x-forwarded-for'] || context.req.connection.remoteAddress || 'unknown',
+                action: 'VIEW_PROFILE',
+                confidentiality_level_accessed: 'N', // Por defecto asume normal a menos que ejecute break-glass
+                reason: 'Consulta rutinaria de historia clínica'
+            }]);
+        } catch (auditErr) {
+            console.error("Error crítico de auditoría:", auditErr);
+            // El sistema debe continuar incluso si falla el log temporalmente, o 
+            // dependiendo de reglas estrictas, podría bloquear el acceso. Asumimos continuar por resiliencia.
+        }
+
         return {
             props: {
                 user,
