@@ -41,6 +41,7 @@ export function withAuth(handler, allowedRoles) {
             profile.role = activeRole.role;
             profile.health_centers = activeRole.health_centers;
             profile.active_cues = activeRole.health_center_id;
+            profile.health_center_id = activeRole.health_center_id;
             profile.practitioner_roles = practitionerRoles;
         } else if (profile.health_center_id) {
             // Legacy fallback if migration hasn't run or user hasn't been migrated
