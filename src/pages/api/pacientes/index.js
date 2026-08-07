@@ -85,6 +85,14 @@ export default apiHandler({
         // Handle boolean for organ donor
         patientData.organ_donor = patientData.organ_donor === 'on' || patientData.organ_donor === true;
 
+        // Ensure JSON objects exist
+        const objectFields = ['social_determinants', 'health_programs', 'sensitive_programs'];
+        objectFields.forEach(field => {
+            if (!patientData[field] || typeof patientData[field] !== 'object') {
+                patientData[field] = {};
+            }
+        });
+
         const newPatient = await patientService.create(supabase, patientData, profile.id);
 
         // Content-Type based response
